@@ -1,0 +1,58 @@
+# This workflow generates CommonAPI code from fidl and fdepl files using the CommonAPI Core and vSOME/IP Generators.
+# The workflow is triggered on push events to the "main" branch and when changes are made to fidl and fdepl files.
+# The generated code is saved in the src-gen folder and committed and pushed to the repository.
+# The workflow contains a single job called "commonapi-code-generator" that runs on ubuntu-latest.
+# The job has six steps that checkout the repository, delete old generated code, download the generators, generate CommonAPI code, and save the generated code.
+name: CI-CD CommonAPI Code Generator
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'can_receiver/fidl/**.fidl'
+      - 'car_receiver/fidl/**.fdepl'
+  workflow_dispatch:
+
+jobs:
+  commonapi-code-generator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 0) Checkout the repository, to have the most recent fidl files. 
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 1) Delete old generated code, if exists. And create new folders.
+        run: |
+          rm -rf ${{ github.workspace }}/can_receiver/src-gen
+          mkdir -p ${{ github.workspace }}/can_receiver/src-gen/core
+          mkdir -p ${{ github.workspace }}/can_receiver/src-gen/someip
+
+      - name: 2) Download CommonAPI Core Generator.
+        run: |
+          wget https://github.com/COVESA/capicxx-core-tools/releases/download/3.2.0.1/commonapi_core_generator.zip
+          unzip commonapi_core_generator.zip -d ${{ github.workspace }}/core-generator
+
+      - name: 3) Download CommonAPI vSOME/IP Generator.
+        run: |
+          wget https://github.com/COVESA/capicxx-someip-tools/releases/download/3.2.0.1/commonapi_someip_generator.zip
+          unzip commonapi_someip_generator.zip -d ${{ github.workspace }}/someip-generator
+
+      - name: 4) Generate CommonAPI Code from Core Generator.
+        run: |
+          echo $(find ${{ github.workspace }} -type f -name '*.fidl')
+          core-generator/commonapi-core-generator-linux-x86_64 -sk $(find ${{ github.workspace }} -type f -name '*.fidl') -d ${{ github.workspace }}/can_receiver/src-gen/core
+
+      - name: 5) Generate CommonAPI Code with the vSOME/IP Generator.
+        run: |
+          echo $(find ${{ github.workspace }} -type f -name '*.fdepl')
+          someip-generator/commonapi-someip-generator-linux-x86_64 $(find ${{ github.workspace }} -type f -name '*.fdepl') -d ${{ github.workspace }}/can_receiver/src-gen/someip
+
+      - name: 6) Save generated code in src-gen (Commit and Push)
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "$(git log -n 1 --pretty=format:%an)"
+          git config user.email "$(git log -n 1 --pretty=format:%ae)"
+          git add can_receiver/src-gen
+          git commit -m "Auto Generated fidl" || true 
+          git push
