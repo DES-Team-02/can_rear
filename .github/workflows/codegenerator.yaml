@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'can_receiver/fidl/**.fidl'
-      - 'car_receiver/fidl/**.fdepl'
+      - 'can_receiver/fidl/**.fdepl'
   workflow_dispatch:
 
 jobs:

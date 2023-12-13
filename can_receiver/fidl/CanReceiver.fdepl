@@ -27,4 +27,4 @@ define org.genivi.commonapi.someip.deployment for provider as Service {
 
         SomeIpInstanceID = 22000
     }
-}
+} 
