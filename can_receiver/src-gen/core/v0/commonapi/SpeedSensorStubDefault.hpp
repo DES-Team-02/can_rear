@@ -77,22 +77,22 @@ public:
         (void)_client;
         setSpeedAttribute(_value);
     }
-    COMMONAPI_EXPORT virtual const uint32_t &getRpAttribute() {
-        return rpAttributeValue_;
+    COMMONAPI_EXPORT virtual const uint32_t &getRpmAttribute() {
+        return rpmAttributeValue_;
     }
-    COMMONAPI_EXPORT virtual const uint32_t &getRpAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
+    COMMONAPI_EXPORT virtual const uint32_t &getRpmAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
         (void)_client;
-        return getRpAttribute();
+        return getRpmAttribute();
     }
-    COMMONAPI_EXPORT virtual void setRpAttribute(uint32_t _value) {
-        const bool valueChanged = trySetRpAttribute(std::move(_value));
+    COMMONAPI_EXPORT virtual void setRpmAttribute(uint32_t _value) {
+        const bool valueChanged = trySetRpmAttribute(std::move(_value));
         if (valueChanged) {
-            fireRpAttributeChanged(rpAttributeValue_);
+            fireRpmAttributeChanged(rpmAttributeValue_);
         }
     }
-    COMMONAPI_EXPORT virtual void setRpAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, uint32_t _value) {
+    COMMONAPI_EXPORT virtual void setRpmAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, uint32_t _value) {
         (void)_client;
-        setRpAttribute(_value);
+        setRpmAttribute(_value);
     }
 
 
@@ -122,29 +122,29 @@ protected:
     COMMONAPI_EXPORT virtual void onRemoteSpeedAttributeChanged() {
         // No operation in default
     }
-    COMMONAPI_EXPORT virtual bool trySetRpAttribute(uint32_t _value) {
-        if (!validateRpAttributeRequestedValue(_value))
+    COMMONAPI_EXPORT virtual bool trySetRpmAttribute(uint32_t _value) {
+        if (!validateRpmAttributeRequestedValue(_value))
             return false;
 
         bool valueChanged;
         std::shared_ptr<SpeedSensorStubAdapter> stubAdapter = CommonAPI::Stub<SpeedSensorStubAdapter, SpeedSensorStubRemoteEvent>::stubAdapter_.lock();
         if(stubAdapter) {
-            stubAdapter->lockRpAttribute(true);
-            valueChanged = (rpAttributeValue_ != _value);
-            rpAttributeValue_ = std::move(_value);
-            stubAdapter->lockRpAttribute(false);
+            stubAdapter->lockRpmAttribute(true);
+            valueChanged = (rpmAttributeValue_ != _value);
+            rpmAttributeValue_ = std::move(_value);
+            stubAdapter->lockRpmAttribute(false);
         } else {
-            valueChanged = (rpAttributeValue_ != _value);
-            rpAttributeValue_ = std::move(_value);
+            valueChanged = (rpmAttributeValue_ != _value);
+            rpmAttributeValue_ = std::move(_value);
         }
 
        return valueChanged;
     }
-    COMMONAPI_EXPORT virtual bool validateRpAttributeRequestedValue(const uint32_t &_value) {
+    COMMONAPI_EXPORT virtual bool validateRpmAttributeRequestedValue(const uint32_t &_value) {
         (void)_value;
         return true;
     }
-    COMMONAPI_EXPORT virtual void onRemoteRpAttributeChanged() {
+    COMMONAPI_EXPORT virtual void onRemoteRpmAttributeChanged() {
         // No operation in default
     }
     class COMMONAPI_EXPORT_CLASS_EXPLICIT RemoteEventHandler: public virtual SpeedSensorStubRemoteEvent {
@@ -168,19 +168,19 @@ protected:
             (void)_client;
             return onRemoteSetSpeedAttribute(_value);
         }
-        COMMONAPI_EXPORT virtual void onRemoteRpAttributeChanged() {
+        COMMONAPI_EXPORT virtual void onRemoteRpmAttributeChanged() {
             assert(defaultStub_ !=NULL);
-            defaultStub_->onRemoteRpAttributeChanged();
+            defaultStub_->onRemoteRpmAttributeChanged();
         }
 
-        COMMONAPI_EXPORT virtual bool onRemoteSetRpAttribute(uint32_t _value) {
+        COMMONAPI_EXPORT virtual bool onRemoteSetRpmAttribute(uint32_t _value) {
             assert(defaultStub_ !=NULL);
-            return defaultStub_->trySetRpAttribute(std::move(_value));
+            return defaultStub_->trySetRpmAttribute(std::move(_value));
         }
 
-        COMMONAPI_EXPORT virtual bool onRemoteSetRpAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, uint32_t _value) {
+        COMMONAPI_EXPORT virtual bool onRemoteSetRpmAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, uint32_t _value) {
             (void)_client;
-            return onRemoteSetRpAttribute(_value);
+            return onRemoteSetRpmAttribute(_value);
         }
 
     private:
@@ -192,7 +192,7 @@ protected:
 private:
 
     uint32_t speedAttributeValue_ {};
-    uint32_t rpAttributeValue_ {};
+    uint32_t rpmAttributeValue_ {};
 
     CommonAPI::Version interfaceVersion_;
 };
