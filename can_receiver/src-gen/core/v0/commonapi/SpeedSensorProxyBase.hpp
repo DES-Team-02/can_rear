@@ -35,11 +35,11 @@ class SpeedSensorProxyBase
     : virtual public CommonAPI::Proxy {
 public:
     typedef CommonAPI::ObservableAttribute<uint32_t> SpeedAttribute;
-    typedef CommonAPI::ObservableAttribute<uint32_t> RpAttribute;
+    typedef CommonAPI::ObservableAttribute<uint32_t> RpmAttribute;
 
 
     virtual SpeedAttribute& getSpeedAttribute() = 0;
-    virtual RpAttribute& getRpAttribute() = 0;
+    virtual RpmAttribute& getRpmAttribute() = 0;
 
     virtual std::future<void> getCompletionFuture() = 0;
 };

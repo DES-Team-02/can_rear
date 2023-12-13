@@ -56,7 +56,7 @@ public:
 
     virtual SpeedAttribute& getSpeedAttribute();
 
-    virtual RpAttribute& getRpAttribute();
+    virtual RpmAttribute& getRpmAttribute();
 
     virtual void getOwnVersion(uint16_t &_major, uint16_t &_minor) const;
 
@@ -64,7 +64,7 @@ public:
 
 private:
     CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<SpeedAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> speed_;
-    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<RpAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> rp_;
+    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<RpmAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> rpm_;
 
     std::promise<void> completed_;
 };
