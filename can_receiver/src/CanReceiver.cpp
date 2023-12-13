@@ -33,14 +33,15 @@ void CanReceiver::readData() {
     struct can_frame frame;
 
     while(running) {
-        ssize_t nbytes = recv(soc, &frame, sizeof(struct can_frame), MSG_WAITALL);
+        //ssize_t nbytes = recv(soc, &frame, sizeof(struct can_frame), MSG_WAITALL);
+        ssize_t nbytes = recv(soc, &frame, sizeof(struct can_frame));
 
         if (nbytes < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
                 // This means a timeout occurred
                 std::cerr << "Receive timeout occurred! Stopping..." << std::endl;
-                running = false;
-                break;
+                // running = false;
+                // break;
             } else {
                 // Some other error occurred during reading
                 perror("Failed to receive data");
