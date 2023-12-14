@@ -20,10 +20,10 @@ int CanReceiver::openPort(const char* iface) {
     addr.can_family = AF_CAN;  
     // Copy the port name to the ifreq structure
     strcpy(ifr.ifr_name, CAN_INTERFACE);  
-    // Fetch the index of the network interface into the ifreq structure using ioctl
+    // Get the interface index of the CAN device
     if (ioctl(soc, SIOCGIFINDEX, &ifr) < 0) 
     {
-	    std::cout << "ioctl Error." << std::endl;
+	    std::cout << "I/O Control Error." << std::endl;
         return (-1);
     }
     // Get the interface index from the ifreq structure
@@ -40,47 +40,22 @@ int CanReceiver::openPort(const char* iface) {
 }
 
 void CanReceiver::readData() {
-    struct can_frame frame;
-    // int recvbytes = 0;
-    // Set the data length code (DLC)
-    // struct timeval timeout = {1, 0};
-    frame.can_dlc = 4;      
+    struct can_frame frame;     
     while(running) {
-
-        /*
-        usleep(100000);  // Sleep for 100ms
-        fd_set readSet;
-        FD_ZERO(&readSet);
-        FD_SET(soc, &readSet);
-        if (select((soc + 1), &readSet, NULL, NULL, &timeout) >= 0) {
-            // If there is data availible on socket, read the data from the socket.
-            if (FD_ISSET(soc, &readSet)) {
-                recvbytes = read(soc, &frame, sizeof(struct can_frame));
-                if (recvbytes) {
-                    switch(frame.can_id){
-                        case 0x100: 
-                            // read raw data from frame & store
-                            int received_raw_rpm = (frame.data[0] << 8) + frame.data[1];
-                            std::lock_guard<std::mutex> lock(dataMutex);
-                            raw_rpm = received_raw_rpm; 
-                    }
-                }
-            }
-        }      
-        */
-
         // receive data
         ssize_t nbytes = recv(soc, &frame, sizeof(struct can_frame), MSG_WAITALL);
-
-        // save timestamp
+        // save timestamp if frame received
         if(nbytes == sizeof(struct can_frame)) {
             last_received_time = std::chrono::steady_clock::now();
         }
-
-        // read raw data from frame & store
-        {
+        switch(frame.can_id){
+            case 0x100: 
+            {
+            // read raw data from frame & store
             std::lock_guard<std::mutex> lock(dataMutex);
-            std::memcpy(&raw_rpm, frame.data, sizeof(int));
+            int received_raw_rpm = frame.data[0] << 8 | frame.data[1]; 
+            raw_rpm = received_raw_rpm;
+            }
         }
     }
 }
@@ -95,7 +70,7 @@ void CanReceiver::processAndFilterData() {
 
     while(running) {
         int current_rpm;
-        // save current rpm
+        // buffer current rpm
         {
             std::lock_guard<std::mutex> lock(dataMutex);
             current_rpm = raw_rpm;
@@ -103,16 +78,15 @@ void CanReceiver::processAndFilterData() {
         // filtered and calculated rpm and speed
         filtered_rpm = rpmFilter.filter(current_rpm);
         filtered_speed = (((filtered_rpm * FACTOR) / WHEEL_RADIUS) * PI) * WHEEL_RADIUS;
-        usleep(100000);
-        std::cout << "----------------------------------------" << std::endl;
-        std::cout << "Received RPM      : " << raw_rpm          << std::endl;
-        std::cout << "Filtered RPM      : " << filtered_rpm     << std::endl; 
-        std::cout << "Filtered Speed    : " << filtered_speed   << std::endl;
-        std::cout << "----------------------------------------" << std::endl;
+        
+        // std::cout << "----------------------------------------" << std::endl;
+        // std::cout << "Received RPM      : " << raw_rpm          << std::endl;
+        // std::cout << "Filtered RPM      : " << filtered_rpm     << std::endl; 
+        // std::cout << "Filtered Speed    : " << filtered_speed   << std::endl;
+        // std::cout << "----------------------------------------" << std::endl;
+
         // send values to vSOME/IP
         dataRegister.sendDataToVSomeIP(static_cast<uint32_t>(filtered_rpm), static_cast<uint32_t>(filtered_speed));
-        // pause for 100ms
-        usleep(100000); 
     }
 }
 
