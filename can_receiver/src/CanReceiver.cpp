@@ -5,62 +5,64 @@ CanReceiver::CanReceiver() : raw_rpm(0), running(false) {}
 CanReceiver::~CanReceiver() {}
 
 int CanReceiver::openPort(const char* iface) {
-    struct sockaddr_can addr;
-    struct ifreq ifr;
+    struct ifreq ifr;           // Interface request structure for socket ioctls
+    struct sockaddr_can addr;   // Address structure for the CAN socket
 
-    if((soc = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0 ) {
-        perror("Socket creation error");
-        return -1;
+    // Open a CAN socket
+    soc = socket(PF_CAN, SOCK_RAW, CAN_RAW);  
+    // Check if socket is created successfully
+    if (soc < 0) 
+    {
+	    std::cout << "Socket Creation Error!" << std::endl;
+        return (-1);
     }
-
-    std::strcpy(ifr.ifr_name , iface);
-    addr.can_family = AF_CAN;
-    addr.can_ifindex = ifr.ifr_ifindex;
-
-    // Set the socket timeout to 10 seconds
-    struct timeval timeout;
-    timeout.tv_sec = 10;
-    timeout.tv_usec = 0;
-    if (setsockopt(soc, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
-        perror("Failed to set socket timeout");
-        return -1;
+    // Set the family type for the address to CAN
+    addr.can_family = AF_CAN;  
+    // Copy the port name to the ifreq structure
+    strcpy(ifr.ifr_name, CAN_INTERFACE);  
+    // Get the interface index of the CAN device
+    if (ioctl(soc, SIOCGIFINDEX, &ifr) < 0) 
+    {
+	    std::cout << "I/O Control Error." << std::endl;
+        return (-1);
     }
-
+    // Get the interface index from the ifreq structure
+    addr.can_ifindex = ifr.ifr_ifindex;  
+    // Set the socket to non-blocking mode
+    fcntl(soc, F_SETFL, O_NONBLOCK);  
+    // Bind the socket to the CAN interface
+    if (bind(soc, (struct sockaddr *)&addr, sizeof(addr)) < 0) 
+    {
+	    std::cout << "Binding Error." << std::endl;
+        return (-1);
+    }
     return 0;
 }
 
 void CanReceiver::readData() {
-    struct can_frame frame;
-
+    struct can_frame frame;     
     while(running) {
+        // receive data
         ssize_t nbytes = recv(soc, &frame, sizeof(struct can_frame), MSG_WAITALL);
-
-        if (nbytes < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                // This means a timeout occurred
-                std::cerr << "Receive timeout occurred! Stopping..." << std::endl;
-                running = false;
-                break;
-            } else {
-                // Some other error occurred during reading
-                perror("Failed to receive data");
-                continue;
-            }
-        }
-
+        // save timestamp if frame received
         if(nbytes == sizeof(struct can_frame)) {
             last_received_time = std::chrono::steady_clock::now();
         }
-
-        {
+        switch(frame.can_id){
+            case 0x100: 
+            {
+            // read raw data from frame & store
             std::lock_guard<std::mutex> lock(dataMutex);
-            std::memcpy(&raw_rpm, frame.data, sizeof(int));
+            int received_raw_rpm = frame.data[0] << 8 | frame.data[1]; 
+            raw_rpm = received_raw_rpm;
+            }
         }
     }
 }
 
 void CanReceiver::processAndFilterData() {
-    MovingAverageFilter rpmFilter(10, 5);
+
+    MovingAverageFilter rpmFilter(10, 5); 
     
     double PI = M_PI;
     double filtered_rpm;
@@ -68,25 +70,25 @@ void CanReceiver::processAndFilterData() {
 
     while(running) {
         int current_rpm;
+        // buffer current rpm
         {
             std::lock_guard<std::mutex> lock(dataMutex);
             current_rpm = raw_rpm;
         }
-        
+        // filtered and calculated rpm and speed
         filtered_rpm = rpmFilter.filter(current_rpm);
-        
-
         filtered_speed = (((filtered_rpm * FACTOR) / WHEEL_RADIUS) * PI) * WHEEL_RADIUS;
+        
+        // std::cout << "----------------------------------------" << std::endl;
+        // std::cout << "Received RPM      : " << raw_rpm          << std::endl;
+        // std::cout << "Filtered RPM      : " << filtered_rpm     << std::endl; 
+        // std::cout << "Filtered Speed    : " << filtered_speed   << std::endl;
+        // std::cout << "----------------------------------------" << std::endl;
 
-        std::cout << "Filtered RPM : " << filtered_rpm << ", Filtered Speed : " << filtered_speed << std::endl;
-
+        // send values to vSOME/IP
         dataRegister.sendDataToVSomeIP(static_cast<uint32_t>(filtered_rpm), static_cast<uint32_t>(filtered_speed));
-
-
-        usleep(100000); // 0.1sec
     }
 }
-
 
 void CanReceiver::closePort() {
     close(soc);
@@ -105,7 +107,6 @@ int CanReceiver::run() {
 
     readerThread.join();
     processorThread.join();
-
 
     closePort();
 

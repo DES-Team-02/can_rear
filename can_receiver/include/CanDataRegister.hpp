@@ -12,15 +12,11 @@ class CanDataRegister {
 public:
     CanDataRegister();
     virtual ~CanDataRegister();
-
-    void sendDataToVSomeIP(uint32_t rpm, uint32_t speed); // Sends the data using Some/IP
-
+    void sendDataToVSomeIP(uint32_t rpm, uint32_t speed); 
 private:
     std::shared_ptr<CommonAPI::Runtime> runtime;
     std::shared_ptr<SpeedSensorStubImpl> SpeedRpmService;
-
     void SpeedSensor_Init();
-    
 };
 
 #endif //CAN_DATA_REGISTER_HPP

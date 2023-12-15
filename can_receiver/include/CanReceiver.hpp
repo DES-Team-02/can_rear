@@ -4,6 +4,7 @@
 #include "MovingAverageFilter.hpp"
 #include "CanDataRegister.hpp"
 
+#include <fcntl.h>
 #include <iostream>
 #include <cstring>
 #include <unistd.h>
