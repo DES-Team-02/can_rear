@@ -34,7 +34,7 @@ std::shared_ptr<CommonAPI::SomeIP::StubAdapter> createSpeedSensorSomeIPStubAdapt
 
 void initializeSpeedSensorSomeIPStubAdapter() {
     CommonAPI::SomeIP::AddressTranslator::get()->insert(
-        "local:commonapi.SpeedSensor:v0_1:SpeedSensor",
+        "local:commonapi.SpeedSensor:v0_1:commonapi.SpeedSensor",
          0x3000, 0x55f0, 0, 1);
     CommonAPI::SomeIP::Factory::get()->registerStubAdapterCreateMethod(
         "commonapi.SpeedSensor:v0_1",
