@@ -70,10 +70,46 @@ target_include_directories(CanReceiver-someip PUBLIC
 )
 set_target_properties (CanReceiver-someip PROPERTIES INTERFACE_LINK_LIBRARY "")
 
-install(TARGETS CanReceiver CanReceiver-someip
-        EXPORT CanReceiver-someipTargets
+install(TARGETS CanReceiver
+        EXPORT CanReceiverTargets
         LIBRARY DESTINATION ${INSTALL_LIB_DIR}
         RUNTIME DESTINATION ${INSTALL_BIN_DIR}
         ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
         PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/CanReceiver"
+)
+
+install(TARGETS CanReceiver-someip
+        EXPORT CanReceiver-someipTargets
+        LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+        ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+        PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/CanReceiver-someip"
+)
+
+
+# Add all targets to the build-tree export set
+export(TARGETS CanReceiver-someip
+  FILE "${PROJECT_BINARY_DIR}/CanReceiver-someipTargets.cmake"
+)
+
+# Export the package for use from the build-tree
+# (this registers the build-tree with a global CMake-registry)
+export(PACKAGE CanReceiver-someip)
+
+# Create the CanReceiver-someipConfig.cmake and CanReceiver-someipConfigVersion files ...
+file(RELATIVE_PATH REL_INCLUDE_DIR "${ABSOLUTE_INSTALL_CMAKE_DIR}" "${ABSOLUTE_INSTALL_INCLUDE_DIR}")
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CanReceiver-someipConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/CanReceiver-someipConfig.cmake" @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CanReceiver-someipConfigVersion.cmake.in
+  "${PROJECT_BINARY_DIR}/CanReceiver-someipConfigVersion.cmake" @ONLY)
+
+install(FILES
+  "${PROJECT_BINARY_DIR}/CanReceiver-someipConfig.cmake"
+  "${PROJECT_BINARY_DIR}/CanReceiver-someipConfigVersion.cmake"
+  DESTINATION "${INSTALL_CMAKE_DIR}"
+)
+
+install(EXPORT CanReceiver-someipTargets
+  DESTINATION "${INSTALL_CMAKE_DIR}"
 )
