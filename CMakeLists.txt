@@ -1,19 +1,17 @@
 ### SETUP ###
 cmake_minimum_required(VERSION 3.15)
-project(Can_Receiver_IC VERSION 0.1 LANGUAGES CXX)
+project(Can_Receiver VERSION 0.1 LANGUAGES CXX)
 
 ### PACKAGES ###
 find_package(CommonAPI REQUIRED)
 find_package(CommonAPI-SomeIP REQUIRED)
 
-#### VARIABLES ####
-set(Can_Receiver_SOURCES
-    src/main.cpp
-    src/SpeedSensorStubImpl.cpp
-    src/CanDataRegister.cpp
-    src/MovingAverageFilter.cpp
-    src/CanReceiver.cpp
-)
+### VARIABLES ###
+# APP_INFO
+set(APP_PACKAGE_NAME commonapi)
+set(MAJOR_VERSION 0)
+set(MINOR_VERSION 1)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -std=c++11")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -32,7 +30,15 @@ foreach(p LIB INCLUDE CMAKE)
   endif()
 endforeach()
 
-FILE(GLOB PRJ_SOMEIP_LIB_SRCS ./src-gen/someip/v0/commonapi/*.cpp)
+set(Can_Receiver_SOURCES
+    src/main.cpp
+    src/SpeedSensorStubImpl.cpp
+    src/CanDataRegister.cpp
+    src/MovingAverageFilter.cpp
+    src/CanReceiver.cpp
+)
+
+FILE(GLOB PRJ_SOMEIP_LIB_SRCS ./src-gen/someip/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*.cpp)
 
 ### DIRECTORIES ###
 include_directories(
@@ -42,18 +48,19 @@ include_directories(
     ${COMMONAPI_INCLUDE_DIRS}
     ${COMMONAPI_SOMEIP_INCLUDE_DIRS}
 )
-
 link_directories(
     ${COMMONAPI_LIBDIR}
     ${COMMONAPI_SOMEIP_CMAKE_DIR}/build
 )
-#### BUILD ####
+
+### BUILD ###
 # Service
 add_executable(CanReceiver 
     ${Can_Receiver_SOURCES}
 )
 target_link_libraries(CanReceiver CommonAPI)
 
+# Library
 add_library(CanReceiver-someip
     SHARED ${PRJ_SOMEIP_LIB_SRCS}
 )
@@ -61,7 +68,7 @@ target_link_libraries(CanReceiver-someip
     CommonAPI
     CommonAPI-SomeIP
 )
-set_target_properties(CanReceiver-someip PROPERTIES VERSION 0.1 SOVERSION 0.1)
+set_target_properties(CanReceiver-someip PROPERTIES VERSION ${MAJOR_VERSION}.${MINOR_VERSION} SOVERSION ${MAJOR_VERSION}.${MINOR_VERSION})
 target_include_directories(CanReceiver-someip PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src-gen/core>
@@ -70,12 +77,30 @@ target_include_directories(CanReceiver-someip PUBLIC
 )
 set_target_properties (CanReceiver-someip PROPERTIES INTERFACE_LINK_LIBRARY "")
 
+
+### INSTALL ###
+
+file(GLOB_RECURSE HEADER_FILES "src-gen/core/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*Proxy.hpp")
+foreach(HEADER ${HEADER_FILES})
+    # Get absolute path of header files.
+    get_filename_component(HEADER_ABS_PATH ${HEADER} ABSOLUTE)
+
+    # Get relative path of header files.
+    file(RELATIVE_PATH HEADER_REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src-gen/core" ${HEADER_ABS_PATH})
+
+    # Get directory name from file name.
+    get_filename_component(HEADER_DIR ${HEADER_REL_PATH} DIRECTORY)
+
+    # Install headers to desired directory.
+    install(FILES ${HEADER_ABS_PATH} DESTINATION ${INSTALL_INCLUDE_DIR}/${HEADER_DIR})
+endforeach()
+
 install(TARGETS CanReceiver
         EXPORT CanReceiverTargets
         LIBRARY DESTINATION ${INSTALL_LIB_DIR}
         RUNTIME DESTINATION ${INSTALL_BIN_DIR}
         ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-        PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/CanReceiver"
+        PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}"
 )
 
 install(TARGETS CanReceiver-someip
@@ -83,9 +108,8 @@ install(TARGETS CanReceiver-someip
         LIBRARY DESTINATION ${INSTALL_LIB_DIR}
         RUNTIME DESTINATION ${INSTALL_BIN_DIR}
         ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-        PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/CanReceiver-someip"
+        PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}"
 )
-
 
 # Add all targets to the build-tree export set
 export(TARGETS CanReceiver-someip
