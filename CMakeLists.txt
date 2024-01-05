@@ -31,20 +31,20 @@ foreach(p LIB INCLUDE CMAKE)
 endforeach()
 
 set(Can_Receiver_SOURCES
-    src/main.cpp
-    src/SpeedSensorStubImpl.cpp
-    src/CanDataRegister.cpp
-    src/MovingAverageFilter.cpp
-    src/CanReceiver.cpp
+    ./can_receiver/src/main.cpp
+    ./can_receiver/src/SpeedSensorStubImpl.cpp
+    ./can_receiver/src/CanDataRegister.cpp
+    ./can_receiver/src/MovingAverageFilter.cpp
+    ./can_receiver/src/CanReceiver.cpp
 )
 
-FILE(GLOB PRJ_SOMEIP_LIB_SRCS ./src-gen/someip/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*.cpp)
+FILE(GLOB PRJ_SOMEIP_LIB_SRCS ./can_receiver/src-gen/someip/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*.cpp)
 
 ### DIRECTORIES ###
 include_directories(
-	./include
-    ./src-gen/core
-    ./src-gen/someip
+	  ./can_receiver/include
+    ./can_receiver/src-gen/core
+    ./can_receiver/src-gen/someip
     ${COMMONAPI_INCLUDE_DIRS}
     ${COMMONAPI_SOMEIP_INCLUDE_DIRS}
 )
