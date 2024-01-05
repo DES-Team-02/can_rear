@@ -8,7 +8,7 @@ find_package(CommonAPI-SomeIP REQUIRED)
 
 ### VARIABLES ###
 # APP_INFO
-set(APP_PACKAGE_NAME commonapi)
+set(APP_PACKAGE_NAME CanReceiver-someip) 
 set(MAJOR_VERSION 0)
 set(MINOR_VERSION 1)
 
