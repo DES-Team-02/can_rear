@@ -31,20 +31,26 @@ foreach(p LIB INCLUDE CMAKE)
 endforeach()
 
 set(Can_Receiver_SOURCES
-    src/main.cpp
-    src/SpeedSensorStubImpl.cpp
-    src/CanDataRegister.cpp
-    src/MovingAverageFilter.cpp
-    src/CanReceiver.cpp
+    can_receiver/src/main.cpp
+    can_receiver/src/SpeedSensorStubImpl.cpp
+    can_receiver/src/CanDataRegister.cpp
+    can_receiver/src/MovingAverageFilter.cpp
+    can_receiver/src/CanReceiver.cpp
 )
 
-FILE(GLOB PRJ_SOMEIP_LIB_SRCS src-gen/someip/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*.cpp)
+FILE(GLOB PRJ_SOMEIP_LIB_SRCS can_receiver/src-gen/someip/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*.cpp)
 
 ### DIRECTORIES ###
 include_directories(
+<<<<<<< HEAD
 	  ./include
     ./src-gen/core
     ./src-gen/someip
+=======
+	  can_receiver/include
+    can_receiver/src-gen/core
+    can_receiver/src-gen/someip
+>>>>>>> parent of 2248146 (Change Directory Structure)
     ${COMMONAPI_INCLUDE_DIRS}
     ${COMMONAPI_SOMEIP_INCLUDE_DIRS}
 )
@@ -80,13 +86,13 @@ set_target_properties (CanReceiver-someip PROPERTIES INTERFACE_LINK_LIBRARY "")
 
 ### INSTALL ###
 
-file(GLOB_RECURSE HEADER_FILES "src-gen/core/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*Proxy.hpp")
+file(GLOB_RECURSE HEADER_FILES "can_receiver/src-gen/core/v${MAJOR_VERSION}/${APP_PACKAGE_NAME}/*Proxy.hpp")
 foreach(HEADER ${HEADER_FILES})
     # Get absolute path of header files.
     get_filename_component(HEADER_ABS_PATH ${HEADER} ABSOLUTE)
 
     # Get relative path of header files.
-    file(RELATIVE_PATH HEADER_REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/src-gen/core" ${HEADER_ABS_PATH})
+    file(RELATIVE_PATH HEADER_REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/can_receiver/src-gen/core" ${HEADER_ABS_PATH})
 
     # Get directory name from file name.
     get_filename_component(HEADER_DIR ${HEADER_REL_PATH} DIRECTORY)
@@ -123,9 +129,9 @@ export(PACKAGE CanReceiver-someip)
 # Create the CanReceiver-someipConfig.cmake and CanReceiver-someipConfigVersion files ...
 file(RELATIVE_PATH REL_INCLUDE_DIR "${ABSOLUTE_INSTALL_CMAKE_DIR}" "${ABSOLUTE_INSTALL_INCLUDE_DIR}")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CanReceiver-someipConfig.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/can_receiver/cmake/CanReceiver-someipConfig.cmake.in
   "${PROJECT_BINARY_DIR}/CanReceiver-someipConfig.cmake" @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CanReceiver-someipConfigVersion.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/can_receiver/cmake/CanReceiver-someipConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/CanReceiver-someipConfigVersion.cmake" @ONLY)
 
 install(FILES
