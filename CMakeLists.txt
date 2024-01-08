@@ -42,9 +42,9 @@ FILE(GLOB PRJ_SOMEIP_LIB_SRCS src-gen/someip/v${MAJOR_VERSION}/${APP_PACKAGE_NAM
 
 ### DIRECTORIES ###
 include_directories(
-	  include
-    src-gen/core
-    src-gen/someip
+	  ./include
+    ./src-gen/core
+    ./src-gen/someip
     ${COMMONAPI_INCLUDE_DIRS}
     ${COMMONAPI_SOMEIP_INCLUDE_DIRS}
 )
