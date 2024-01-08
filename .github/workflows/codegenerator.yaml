@@ -9,8 +9,8 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'can_receiver/fidl/**.fidl'
-      - 'can_receiver/fidl/**.fdepl'
+      - 'fidl/**.fidl'
+      - 'fidl/**.fdepl'
   workflow_dispatch:
 
 jobs:
@@ -24,9 +24,9 @@ jobs:
 
       - name: 1) Delete old generated code, if exists. And create new folders.
         run: |
-          rm -rf ${{ github.workspace }}/can_receiver/src-gen
-          mkdir -p ${{ github.workspace }}/can_receiver/src-gen/core
-          mkdir -p ${{ github.workspace }}/can_receiver/src-gen/someip
+          rm -rf ${{ github.workspace }}/src-gen
+          mkdir -p ${{ github.workspace }}/src-gen/core
+          mkdir -p ${{ github.workspace }}/src-gen/someip
 
       - name: 2) Download CommonAPI Core Generator.
         run: |
