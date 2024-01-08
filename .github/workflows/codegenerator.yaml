@@ -41,18 +41,18 @@ jobs:
       - name: 4) Generate CommonAPI Code from Core Generator.
         run: |
           echo $(find ${{ github.workspace }} -type f -name '*.fidl')
-          core-generator/commonapi-core-generator-linux-x86_64 -sk $(find ${{ github.workspace }} -type f -name '*.fidl') -d ${{ github.workspace }}/can_receiver/src-gen/core
+          core-generator/commonapi-core-generator-linux-x86_64 -sk $(find ${{ github.workspace }} -type f -name '*.fidl') -d ${{ github.workspace }}/src-gen/core
 
       - name: 5) Generate CommonAPI Code with the vSOME/IP Generator.
         run: |
           echo $(find ${{ github.workspace }} -type f -name '*.fdepl')
-          someip-generator/commonapi-someip-generator-linux-x86_64 $(find ${{ github.workspace }} -type f -name '*.fdepl') -d ${{ github.workspace }}/can_receiver/src-gen/someip
+          someip-generator/commonapi-someip-generator-linux-x86_64 $(find ${{ github.workspace }} -type f -name '*.fdepl') -d ${{ github.workspace }}/src-gen/someip
 
       - name: 6) Save generated code in src-gen (Commit and Push)
         if: github.event_name == 'push'
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
-          git add can_receiver/src-gen
+          git add src-gen
           git commit -m "Auto Generated fidl" || true 
           git push
