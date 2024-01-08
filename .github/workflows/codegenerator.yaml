@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 0) Checkout the repository, to have the most recent fidl files. 
-        uses: actions/checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
