@@ -55,3 +55,4 @@ jobs:
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
           git add src-gen
           git commit -m "Auto Generated fidl" || true 
+          git push
