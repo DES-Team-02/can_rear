@@ -12,7 +12,7 @@ define org.genivi.commonapi.someip.deployment for interface commonapi.SpeedSenso
         SomeIpNotifierEventGroups = { 33104 }
     }
 
-    attribute rpm {
+    attribute rpmf {
         SomeIpGetterID = 0x3201
         SomeIpSetterID = 0x3202
         SomeIpNotifierID = 33204
