@@ -48,7 +48,7 @@ SpeedSensorSomeIPProxy::SpeedSensorSomeIPProxy(
     const std::shared_ptr<CommonAPI::SomeIP::ProxyConnection> &_connection)
         : CommonAPI::SomeIP::Proxy(_address, _connection),
           speed_(*this, CommonAPI::SomeIP::eventgroup_id_t(0x8150), CommonAPI::SomeIP::event_id_t(0x8150), CommonAPI::SomeIP::method_id_t(0x3101), true, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE, false, CommonAPI::SomeIP::method_id_t(0x3102), true, static_cast< CommonAPI::SomeIP::IntegerDeployment<uint32_t>* >(nullptr)),
-          rpm_(*this, CommonAPI::SomeIP::eventgroup_id_t(0x81b4), CommonAPI::SomeIP::event_id_t(0x81b4), CommonAPI::SomeIP::method_id_t(0x3201), true, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE, false, CommonAPI::SomeIP::method_id_t(0x3202), true, static_cast< CommonAPI::SomeIP::IntegerDeployment<uint32_t>* >(nullptr))
+          rpmf_(*this, CommonAPI::SomeIP::eventgroup_id_t(0x81b4), CommonAPI::SomeIP::event_id_t(0x81b4), CommonAPI::SomeIP::method_id_t(0x3201), true, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE, false, CommonAPI::SomeIP::method_id_t(0x3202), true, static_cast< CommonAPI::SomeIP::IntegerDeployment<uint32_t>* >(nullptr))
 {
 }
 
@@ -58,8 +58,8 @@ SpeedSensorSomeIPProxy::~SpeedSensorSomeIPProxy() {
 SpeedSensorSomeIPProxy::SpeedAttribute& SpeedSensorSomeIPProxy::getSpeedAttribute() {
     return speed_;
 }
-SpeedSensorSomeIPProxy::RpmAttribute& SpeedSensorSomeIPProxy::getRpmAttribute() {
-    return rpm_;
+SpeedSensorSomeIPProxy::RpmfAttribute& SpeedSensorSomeIPProxy::getRpmfAttribute() {
+    return rpmf_;
 }
 
 

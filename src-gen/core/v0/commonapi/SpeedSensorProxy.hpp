@@ -77,10 +77,10 @@ public:
         return delegate_->getSpeedAttribute();
     }
     /**
-     * Returns the wrapper class that provides access to the attribute rpm.
+     * Returns the wrapper class that provides access to the attribute rpmf.
      */
-    virtual RpmAttribute& getRpmAttribute() {
-        return delegate_->getRpmAttribute();
+    virtual RpmfAttribute& getRpmfAttribute() {
+        return delegate_->getRpmfAttribute();
     }
 
 
@@ -112,17 +112,17 @@ namespace SpeedSensorExtensions {
     };
 
     template <template <typename > class _ExtensionType>
-    class RpmAttributeExtension {
+    class RpmfAttributeExtension {
      public:
-        typedef _ExtensionType< SpeedSensorProxyBase::RpmAttribute> extension_type;
+        typedef _ExtensionType< SpeedSensorProxyBase::RpmfAttribute> extension_type;
     
-        static_assert(std::is_base_of<typename CommonAPI::AttributeExtension< SpeedSensorProxyBase::RpmAttribute>, extension_type>::value,
+        static_assert(std::is_base_of<typename CommonAPI::AttributeExtension< SpeedSensorProxyBase::RpmfAttribute>, extension_type>::value,
                       "Not CommonAPI Attribute Extension!");
     
-        RpmAttributeExtension(SpeedSensorProxyBase& proxy): attributeExtension_(proxy.getRpmAttribute()) {
+        RpmfAttributeExtension(SpeedSensorProxyBase& proxy): attributeExtension_(proxy.getRpmfAttribute()) {
         }
     
-        inline extension_type& getRpmAttributeExtension() {
+        inline extension_type& getRpmfAttributeExtension() {
             return attributeExtension_;
         }
     
@@ -186,7 +186,7 @@ struct DefaultAttributeProxyHelper< ::v0::commonapi::SpeedSensorProxy,
     _AttributeExtension> {
     typedef typename ::v0::commonapi::SpeedSensorProxy<
             ::v0::commonapi::SpeedSensorExtensions::SpeedAttributeExtension<_AttributeExtension>, 
-            ::v0::commonapi::SpeedSensorExtensions::RpmAttributeExtension<_AttributeExtension>
+            ::v0::commonapi::SpeedSensorExtensions::RpmfAttributeExtension<_AttributeExtension>
     > class_t;
 };
 }
