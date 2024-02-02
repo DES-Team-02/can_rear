@@ -96,14 +96,6 @@ class SpeedSensorStubRemoteEvent
 public:
     virtual ~SpeedSensorStubRemoteEvent() { }
 
-    /// Verification callback for remote set requests on the attribute speed
-    virtual bool onRemoteSetSpeedAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, uint32_t _value) = 0;
-    /// Action callback for remote set requests on the attribute speed
-    virtual void onRemoteSpeedAttributeChanged() = 0;
-    /// Verification callback for remote set requests on the attribute rpm
-    virtual bool onRemoteSetRpmAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, uint32_t _value) = 0;
-    /// Action callback for remote set requests on the attribute rpm
-    virtual void onRemoteRpmAttributeChanged() = 0;
 };
 
 /**

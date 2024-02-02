@@ -63,8 +63,8 @@ public:
     virtual std::future<void> getCompletionFuture();
 
 private:
-    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<SpeedAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> speed_;
-    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<RpmAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> rpm_;
+    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::ReadonlyAttribute<SpeedAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> speed_;
+    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::ReadonlyAttribute<RpmAttribute, CommonAPI::SomeIP::IntegerDeployment<uint32_t>>> rpm_;
 
 };
 

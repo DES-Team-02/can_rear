@@ -34,8 +34,8 @@ namespace commonapi {
 class SpeedSensorProxyBase
     : virtual public CommonAPI::Proxy {
 public:
-    typedef CommonAPI::ObservableAttribute<uint32_t> SpeedAttribute;
-    typedef CommonAPI::ObservableAttribute<uint32_t> RpmAttribute;
+    typedef CommonAPI::ObservableReadonlyAttribute<uint32_t> SpeedAttribute;
+    typedef CommonAPI::ObservableReadonlyAttribute<uint32_t> RpmAttribute;
 
 
     virtual SpeedAttribute& getSpeedAttribute() = 0;

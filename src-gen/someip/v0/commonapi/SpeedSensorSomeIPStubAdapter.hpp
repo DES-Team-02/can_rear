@@ -63,23 +63,11 @@ public:
         CommonAPI::SomeIP::IntegerDeployment<uint32_t>
     > getSpeedAttributeStubDispatcher;
     
-    CommonAPI::SomeIP::SetObservableAttributeStubDispatcher<
-        ::v0::commonapi::SpeedSensorStub,
-        uint32_t,
-        CommonAPI::SomeIP::IntegerDeployment<uint32_t>
-    > setSpeedAttributeStubDispatcher;
-    
     CommonAPI::SomeIP::GetAttributeStubDispatcher<
         ::v0::commonapi::SpeedSensorStub,
         uint32_t,
         CommonAPI::SomeIP::IntegerDeployment<uint32_t>
     > getRpmAttributeStubDispatcher;
-    
-    CommonAPI::SomeIP::SetObservableAttributeStubDispatcher<
-        ::v0::commonapi::SpeedSensorStub,
-        uint32_t,
-        CommonAPI::SomeIP::IntegerDeployment<uint32_t>
-    > setRpmAttributeStubDispatcher;
     
     SpeedSensorSomeIPStubAdapterInternal(
         const CommonAPI::SomeIP::Address &_address,
@@ -95,48 +83,30 @@ public:
             &::v0::commonapi::SpeedSensorStub::lockSpeedAttribute,
             &::v0::commonapi::SpeedSensorStub::getSpeedAttribute,
             false,
-            _stub->hasElement(0)),
-        setSpeedAttributeStubDispatcher(
-            &::v0::commonapi::SpeedSensorStub::lockSpeedAttribute,
-            &::v0::commonapi::SpeedSensorStub::getSpeedAttribute,
-            &SpeedSensorStubRemoteEvent::onRemoteSetSpeedAttribute,
-            &SpeedSensorStubRemoteEvent::onRemoteSpeedAttributeChanged,
-            &SpeedSensorStubAdapter::fireSpeedAttributeChanged,
-            false,
             _stub->hasElement(0))
         ,
         getRpmAttributeStubDispatcher(
             &::v0::commonapi::SpeedSensorStub::lockRpmAttribute,
             &::v0::commonapi::SpeedSensorStub::getRpmAttribute,
             false,
-            _stub->hasElement(1)),
-        setRpmAttributeStubDispatcher(
-            &::v0::commonapi::SpeedSensorStub::lockRpmAttribute,
-            &::v0::commonapi::SpeedSensorStub::getRpmAttribute,
-            &SpeedSensorStubRemoteEvent::onRemoteSetRpmAttribute,
-            &SpeedSensorStubRemoteEvent::onRemoteRpmAttributeChanged,
-            &SpeedSensorStubAdapter::fireRpmAttributeChanged,
-            false,
             _stub->hasElement(1))
     {
-        SpeedSensorSomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0x3101) }, &getSpeedAttributeStubDispatcher );
-        SpeedSensorSomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0x3102) }, &setSpeedAttributeStubDispatcher );
-        SpeedSensorSomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0x3201) }, &getRpmAttributeStubDispatcher );
-        SpeedSensorSomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0x3202) }, &setRpmAttributeStubDispatcher );
+        SpeedSensorSomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0xc1d) }, &getSpeedAttributeStubDispatcher );
+        SpeedSensorSomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0xc81) }, &getRpmAttributeStubDispatcher );
         std::shared_ptr<CommonAPI::SomeIP::ClientId> itsClient = std::make_shared<CommonAPI::SomeIP::ClientId>();
 
         // Provided events/fields
         if (_stub->hasElement(0)) {
             std::set<CommonAPI::SomeIP::eventgroup_id_t> itsEventGroups;
-            itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(CommonAPI::SomeIP::eventgroup_id_t(0x8150)));
-            CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x8150), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_FIELD, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE);
+            itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(CommonAPI::SomeIP::eventgroup_id_t(0xc1c)));
+            CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x7918), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_FIELD, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE);
             fireSpeedAttributeChanged(std::dynamic_pointer_cast< ::v0::commonapi::SpeedSensorStub>(_stub)->getSpeedAttribute(itsClient));
         }
 
         if (_stub->hasElement(1)) {
             std::set<CommonAPI::SomeIP::eventgroup_id_t> itsEventGroups;
-            itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(CommonAPI::SomeIP::eventgroup_id_t(0x81b4)));
-            CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x81b4), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_FIELD, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE);
+            itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(CommonAPI::SomeIP::eventgroup_id_t(0xc80)));
+            CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x7d00), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_FIELD, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE);
             fireRpmAttributeChanged(std::dynamic_pointer_cast< ::v0::commonapi::SpeedSensorStub>(_stub)->getRpmAttribute(itsClient));
         }
 
@@ -160,7 +130,7 @@ void SpeedSensorSomeIPStubAdapterInternal<_Stub, _Stubs...>::fireSpeedAttributeC
             >
     >::sendEvent(
         *this,
-        CommonAPI::SomeIP::event_id_t(0x8150),
+        CommonAPI::SomeIP::event_id_t(0x7918),
         false,
         deployedValue
     );
@@ -178,7 +148,7 @@ void SpeedSensorSomeIPStubAdapterInternal<_Stub, _Stubs...>::fireRpmAttributeCha
             >
     >::sendEvent(
         *this,
-        CommonAPI::SomeIP::event_id_t(0x81b4),
+        CommonAPI::SomeIP::event_id_t(0x7d00),
         false,
         deployedValue
     );
