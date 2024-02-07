@@ -57,6 +57,8 @@ void CanReceiver::readData() {
             raw_rpm = received_raw_rpm;
             }
         }
+        // sleep for 100ms
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
@@ -80,16 +82,18 @@ void CanReceiver::processAndFilterData() {
         // calculated speed (sensor wheel on wheel outer-diameter )
         //filtered_speed = (((filtered_rpm * FACTOR) / WHEEL_RADIUS) * PI) * WHEEL_RADIUS;
         // calculated speed (sensor wheel on wheel shaft )
-        filtered_speed = ((filtered_rpm) / (WHEEL_RADIUS * 2 * PI)) / 1000;
+        filtered_speed = ((filtered_rpm) / (WHEEL_RADIUS * 2 * PI)) / 3;
         
-        // std::cout << "----------------------------------------" << std::endl;
-        // std::cout << "Received RPM      : " << raw_rpm          << std::endl;
-        // std::cout << "Filtered RPM      : " << filtered_rpm     << std::endl; 
-        // std::cout << "Filtered Speed    : " << filtered_speed   << std::endl;
-        // std::cout << "----------------------------------------" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "Received RPM      : " << raw_rpm          << std::endl;
+        std::cout << "Filtered RPM      : " << filtered_rpm     << std::endl; 
+        std::cout << "Filtered Speed    : " << filtered_speed   << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
 
         // send values to vSOME/IP
         dataRegister.sendDataToVSomeIP(static_cast<uint32_t>(filtered_rpm), static_cast<uint32_t>(filtered_speed));
+        // 
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 

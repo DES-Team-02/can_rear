@@ -34,10 +34,16 @@ void CanDataRegister::SpeedSensor_Init(){
 
 /* sets the attributes of vSOME/IP service*/
 void CanDataRegister::sendDataToVSomeIP(uint32_t rpm, uint32_t speed) {
-    // Set RPM and Speed values via the Speed_SensorStubImpl
-    std::cout << " rpm: "   << rpm << std::endl; 
-    std::cout << " speed: " << speed << std::endl;
-    SpeedRpmService->setRpmAttribute(rpm);
-    SpeedRpmService->setSpeedAttribute(speed);
+
+    // Intervall für den Timer
+    // static auto startingtime = std::chrono::steady_clock::now();
+    // auto currenttime = std::chrono::steady_clock::now();
+    // auto intervall = std::chrono::milliseconds(500);
+    // if (currenttime - startingtime >= intervall) {
+        // Set RPM and Speed values via the Speed_SensorStubImpl
+        SpeedRpmService->setRpmAttribute(rpm);
+        SpeedRpmService->setSpeedAttribute(speed);
+//         startingtime = currenttime;
+//     }
 }
 
