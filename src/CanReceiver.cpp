@@ -79,10 +79,8 @@ void CanReceiver::processAndFilterData() {
         }
         // filtered rpm
         filtered_rpm = rpmFilter.filter(current_rpm);
-        // calculated speed (sensor wheel on wheel outer-diameter )
-        //filtered_speed = (((filtered_rpm * FACTOR) / WHEEL_RADIUS) * PI) * WHEEL_RADIUS;
         // calculated speed (sensor wheel on wheel shaft )
-        filtered_speed = ((filtered_rpm) / (WHEEL_RADIUS * 2 * PI)) / 3;
+        filtered_speed = ((filtered_rpm) / (WHEEL_RADIUS * 2 * PI)) / 6;
         
         std::cout << "----------------------------------------" << std::endl;
         std::cout << "Received RPM      : " << raw_rpm          << std::endl;
